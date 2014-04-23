@@ -16,3 +16,10 @@ celerybeat-schedule
 popit-api-for-testing
 src
 *.egg-info
+
+conf/httpd.conf
+conf/httpd.conf.deployed
+conf/general.yml
+conf/general.yml.deployed
+conf/local_settings.py
+conf/local_settings.py.deployed
