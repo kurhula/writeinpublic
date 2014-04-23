@@ -1,7 +1,7 @@
 footer {
 }
 .getbacktotheinstance {
-	
+
 }
 .message-form {
 	padding: 15px;
@@ -77,4 +77,22 @@ height: auto;
     text-decoration: none;
     width: 100%;
     margin-top: 80px;
+}
+
+#first-instance-helper {
+  text-align: center;
+  background-color: rgba(230, 231, 231, 0.5); /* improve legibility on modern browsers */
+}
+
+#first-instance-helper .form-group {
+  max-width: 600px;
+  margin: 30px auto;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+}
+
+#first-instance-helper label {
+  font-weight: normal;
+  font-size: 18px;
+  margin: 0;
 }
