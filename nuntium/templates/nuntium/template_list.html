@@ -11,13 +11,28 @@
 {% endblock menu-list-active %}
 
 {% block content %}
-<div class="jumbotron">
 
-  <h2>{% trans "Current instances of write it" %}</h2>
-  <ul>
-  {% for instance in object_list %}
-  <li><a href="{% url 'instance_detail' subdomain=instance.slug %}">{{ instance.name }}</a></li>
-  {% endfor %}
-  </ul>
-</div>
-{% endblock content%}
+  {% if object_list|length %}
+
+    <div class="jumbotron">
+      <h2>{% trans "Current instances of write it" %}</h2>
+      <ul>
+      {% for instance in object_list %}
+      <li><a href="{% url 'instance_detail' subdomain=instance.slug %}">{{ instance.name }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+
+  {% else %}
+
+    <div class="jumbotron" id="first-instance-helper">
+      <h2>There are no instances of Write-It yet</h2>
+      <div class="form-group">
+        <label for="first-instance-api-url">Create an instance using a PopIt API URL:</label>
+        <input type="text" class="form-control" id="first-instance-api-url" placeholder="http://popit.master.ciudadanointeligente.org/api/">
+      </div>
+    </div>
+
+  {% endif %}
+
+{% endblock content %}

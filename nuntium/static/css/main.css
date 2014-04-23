@@ -184,3 +184,37 @@
 .profile-page-tab-content .page-header h3 {
   margin-top: 0;
 }
+.contactBtn {
+  background: none repeat scroll 0 0 #57D6AC;
+    border-radius: 6px 6px 6px 6px;
+    color: #FFFFFF;
+    font-size: 24px;
+    line-height: 21.2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    opacity: 0.9;
+    padding: 15px 10px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    margin-top: 80px;
+}
+
+#first-instance-helper {
+  text-align: center;
+  background-color: rgba(230, 231, 231, 0.5); /* improve legibility on modern browsers */
+}
+
+#first-instance-helper .form-group {
+  max-width: 600px;
+  margin: 30px auto;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+}
+
+#first-instance-helper label {
+  font-weight: normal;
+  font-size: 18px;
+  margin: 0;
+}
