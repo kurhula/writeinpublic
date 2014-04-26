@@ -6,6 +6,7 @@ from .models import WriteItInstance, Confirmation, OutboundMessage, Message, Mod
                             NewAnswerNotificationTemplate, ConfirmationTemplate
 from .forms import MessageCreateForm, MessageSearchForm, \
                             PerInstanceSearchForm
+from .user_section.views import WriteItInstanceCreateView
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
@@ -32,6 +33,13 @@ class HomeTemplateView(TemplateView):
 
 class WriteItInstanceListView(ListView):
     model = WriteItInstance
+
+
+class WriteItCreateInstanceView(WriteItInstanceCreateView):
+    """Override instance creation to redirect straight to the instance"""
+    def get_success_url(self):
+        return reverse('instance_detail', subdomain=self.object.slug)
+
 
 class WriteItInstanceDetailView(CreateView):
     form_class = MessageCreateForm
