@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if object_list|length %}
+    {% for person in object_list %}
+    <p class="person">{{ person }}</p>
+    {% endfor %}
+  {% else %}
+    <p>No people</p>
+  {% endif %}
+{% endblock %}

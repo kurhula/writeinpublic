@@ -38,7 +38,7 @@ class WriteItInstanceListView(ListView):
 class WriteItCreateInstanceView(WriteItInstanceCreateView):
     """Override instance creation to redirect straight to the instance"""
     def get_success_url(self):
-        return reverse('instance_detail', subdomain=self.object.slug)
+        return reverse('people_list', subdomain=self.object.slug)
 
 
 class WriteItInstanceDetailView(CreateView):
@@ -205,3 +205,17 @@ class MessagesPerPersonView(ListView):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
         return context
+
+
+class WriteItPeopleListView(ListView):
+    model = Person
+
+    def dispatch(self, *args, **kwargs):
+        self.subdomain = self.request.subdomain
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
+        return super(WriteItPeopleListView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = Person.objects.filter(
+            membership__writeitinstance=self.writeitinstance).order_by('name')
+        return qs
