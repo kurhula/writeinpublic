@@ -2,9 +2,11 @@
 
 {% block content %}
   {% if object_list|length %}
+  <ol>
     {% for person in object_list %}
-    <p class="person"><a href="{% url 'new_message' pk=person.pk %}">{{ person }}</a></p>
+    <li class="person"><a href="{% url 'new_message' pk=person.pk %}">{{ person }}</a></li>
     {% endfor %}
+  </ol>
   {% else %}
     <p>No people</p>
   {% endif %}
