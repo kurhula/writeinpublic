@@ -3,7 +3,7 @@
 {% block content %}
   {% if object_list|length %}
     {% for person in object_list %}
-    <p class="person">{{ person }}</p>
+    <p class="person"><a href="{% url 'new_message' pk=person.pk %}">{{ person }}</a></p>
     {% endfor %}
   {% else %}
     <p>No people</p>

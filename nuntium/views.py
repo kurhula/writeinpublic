@@ -219,3 +219,18 @@ class WriteItPeopleListView(ListView):
         qs = Person.objects.filter(
             membership__writeitinstance=self.writeitinstance).order_by('name')
         return qs
+
+
+class WriteItPersonDetailView(WriteItInstanceDetailView):
+    template_name='nuntium/person_detail.html'
+
+    def dispatch(self, *args, **kwargs):
+        self.person = Person.objects.get(id=self.kwargs['pk'])
+        self.subdomain = self.request.subdomain
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
+        return super(WriteItPersonDetailView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self,**kwargs):
+        context = super(WriteItPersonDetailView, self).get_context_data(**kwargs)
+        context['person'] = self.person
+        return context
