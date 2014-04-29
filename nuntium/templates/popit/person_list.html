@@ -1,13 +1,29 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
   {% if object_list|length %}
-  <ol>
+  <div class="jumbotron jumbotron-person-page">
+    <h2>{% trans "You writeit and we deliver it!" %}</h2>
+    <p>Send messages to the people that matter. Pick a name below to get started.</p>
+  </div>
+
+  <ol class="row popit-person-list">
     {% for person in object_list %}
-    <li class="person"><a href="{% url 'new_message' pk=person.pk %}">{{ person }}</a></li>
+    <li class="person col-xs-6 col-lg-4">
+      <a class="media" href="{% url 'new_message' pk=person.pk %}">
+        <span class="pull-left media-object initials">{{ person|stringformat:".1s" }}</span>
+        <div class="media-body">
+          <h4>{{ person }}</h4>
+        </div>
+      </a>
+    </li>
     {% endfor %}
   </ol>
   {% else %}
-    <p>No people</p>
+  <div class="jumbotron jumbotron-person-page">
+    <h2>{% trans "You writeit and we deliver it!" %}</h2>
+    <p>Except, you don&rsquo;t have any people yet.</p>
+  </div>
   {% endif %}
 {% endblock %}

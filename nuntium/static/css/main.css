@@ -90,6 +90,14 @@
   background-color: transparent;
 }
 
+.jumbotron > :first-child {
+  margin-top: 0;
+}
+
+.jumbotron > :last-child {
+  margin-bottom: 0;
+}
+
 .jumbotron-homepage {
   margin: 0;
 }
@@ -131,11 +139,7 @@
 /* Other pages */
 
 #wrap > .container {
-  padding: 60px 15px 0;
-}
-
-.writing-panel {
-  margin-top: 20px;
+  padding: 80px 15px 0;
 }
 
 .writing-panel .panel-body {
@@ -155,10 +159,6 @@
   padding: 10px;
   border-radius: 5px;
   color: white;
-}
-
-.profile-page-nav {
-  margin-top: 20px;
 }
 
 .profile-page-tab-content {
@@ -184,6 +184,7 @@
 .profile-page-tab-content .page-header h3 {
   margin-top: 0;
 }
+
 .contactBtn {
   background: none repeat scroll 0 0 #57D6AC;
     border-radius: 6px 6px 6px 6px;
@@ -217,4 +218,49 @@
   font-weight: normal;
   font-size: 18px;
   margin: 0;
+}
+
+.jumbotron-person-page {
+  background: #f3f3f3;
+  background: rgba(255,255,255,0.8);
+  text-shadow: 0 1px 0 #fff;
+}
+
+.popit-person-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 -15px;
+}
+
+.popit-person-list li {
+  margin-bottom: 20px;
+}
+
+.popit-person-list .initials {
+  display: block;
+  line-height: 40px;
+  height: 40px;
+  width: 40px;
+  font-size: 21px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #ccc;
+  background: #f3f3f3;
+  background: rgba(255,255,255,0.8);
+  text-shadow: 0 1px 0 #fff;
+  text-align: center;
+}
+
+.popit-person-list a:hover .initials {
+  color: #bbb;
+}
+
+.popit-person-list h4 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  width: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
