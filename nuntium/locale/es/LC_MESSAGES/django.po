@@ -377,7 +377,7 @@ msgid "Answers"
 msgstr ""
 
 #: templates/nuntium/message/message_detail.html:45
-msgid "Get back to the messages."
+msgid "Back to homepage"
 msgstr ""
 
 #: templates/nuntium/message/message_in_list.html:12

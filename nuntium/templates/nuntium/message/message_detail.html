@@ -43,6 +43,6 @@
 </div>
 {% endif %}
 
-<div class="getbacktotheinstance text-center"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}"><i class="glyphicon glyphicon-chevron-left"></i>{% blocktrans %}Get back to the messages.{% endblocktrans %} </a></div>
+<div class="getbacktotheinstance text-center"> <a href="{% url 'people_list' subdomain=message.writeitinstance.slug %}"><i class="glyphicon glyphicon-chevron-left"></i>{% blocktrans %}Back to homepage{% endblocktrans %} </a></div>
 
 {% endblock %}

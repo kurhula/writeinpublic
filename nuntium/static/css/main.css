@@ -196,6 +196,10 @@
   margin-top: 10px;
 }
 
+.message-form .row.last .form-group {
+  margin-bottom: 0;
+}
+
 label[for="id_persons"] + ul {
   padding-left: 0;
 }
