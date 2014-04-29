@@ -358,14 +358,17 @@ msgid " by %(name)s."
 msgstr ""
 
 #: templates/nuntium/message/message_detail.html:13
-msgid "This message was sent to"
+msgid "Sent to:"
 msgstr ""
 
 #: templates/nuntium/message/message_detail.html:23
+msgid "Asked by:"
+msgstr ""
+
 #: templates/nuntium/message/message_in_list.html:38
 #: templates/nuntium/message/message_in_search_list.html:13
 #, python-format
-msgid "Asked by %(name)s."
+msgid "Asked by: %(name)s."
 msgstr ""
 
 #: templates/nuntium/message/message_detail.html:38
@@ -373,7 +376,7 @@ msgid "Answers"
 msgstr ""
 
 #: templates/nuntium/message/message_detail.html:45
-msgid " Get back to the messages."
+msgid "Get back to the messages."
 msgstr ""
 
 #: templates/nuntium/message/message_in_list.html:12

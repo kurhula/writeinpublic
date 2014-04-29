@@ -29,6 +29,13 @@
 }
 
 
+/* Content */
+
+#wrap > .container {
+  padding: 80px 15px 30px 15px;
+}
+
+
 /* Footer */
 
 #wrap {
@@ -136,11 +143,28 @@
 }
 
 
-/* Other pages */
+/* Instance listing page */
 
-#wrap > .container {
-  padding: 80px 15px 0;
+#first-instance-helper {
+  text-align: center;
+  background-color: rgba(230, 231, 231, 0.5); /* improve legibility on modern browsers */
 }
+
+#first-instance-helper .form-group {
+  max-width: 600px;
+  margin: 30px auto;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+}
+
+#first-instance-helper label {
+  font-weight: normal;
+  font-size: 18px;
+  margin: 0;
+}
+
+
+/* Message Writing pages */
 
 .previous-messages {
   /* Zarino has no idea what this section is for,
@@ -149,13 +173,19 @@
   display: none;
 }
 
-.writing-panel {
+.writing-panel, .message-detail, .getbacktotheinstance {
   max-width: 720px;
   margin: 0 auto;
 }
 
 .writing-panel .panel-body {
   padding: 20px;
+}
+
+@media screen and (min-width: 768px) {
+  .writing-panel .panel-body {
+    padding: 30px 40px;
+  }
 }
 
 .message-form .form-group {
@@ -181,9 +211,54 @@ label[for="id_persons"] + ul {
   box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
 }
 
+
+.message-detail .panel-header > :last-child,
+.message-detail .panel-body > :last-child,
+.message-detail .panel-footer > :last-child,
+.message-detail .dl-horizontal,
+.message-detail .dl-horizontal > dd > :last-child {
+  margin-bottom: 0;
+}
+
+.message-detail .dl-horizontal > dt {
+  font-weight: normal;
+  color: #999;
+  width: 80px;
+}
+
+@media screen and (min-width: 768px) {
+  .message-detail .dl-horizontal > dd {
+    margin-left: 100px;
+  }
+}
+
+.message-detail .message_content {
+  font-size: 18px;
+}
+
+.message-detail .panel-body dt {
+  margin-top: 3px; /* compensate for 18px <dd> font-size */
+}
+
+.message-detail .panel-footer dd {
+  margin-bottom: 7px;
+}
+
+.message-detail .panel-footer dd:last-child {
+  margin-bottom: 0;
+}
+
+.getbacktotheinstance .glyphicon {
+  margin-right: 4px;
+  font-size: 12px;
+}
+
 .answer-in-list {
   margin: 20px;
 }
+
+
+/* User account admin pages */
 
 .template-update {
   background-color: #2E353F;
@@ -201,8 +276,7 @@ label[for="id_persons"] + ul {
 }
 
 @media screen and (min-width: 768px) {
-  .profile-page-tab-content,
-  .writing-panel .panel-body {
+  .profile-page-tab-content {
     padding: 30px 40px;
   }
 }
@@ -216,40 +290,8 @@ label[for="id_persons"] + ul {
   margin-top: 0;
 }
 
-.contactBtn {
-  background: none repeat scroll 0 0 #57D6AC;
-    border-radius: 6px 6px 6px 6px;
-    color: #FFFFFF;
-    font-size: 24px;
-    line-height: 21.2px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    opacity: 0.9;
-    padding: 15px 10px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    width: 100%;
-    margin-top: 80px;
-}
 
-#first-instance-helper {
-  text-align: center;
-  background-color: rgba(230, 231, 231, 0.5); /* improve legibility on modern browsers */
-}
-
-#first-instance-helper .form-group {
-  max-width: 600px;
-  margin: 30px auto;
-  border-top: 1px solid #ccc;
-  padding-top: 20px;
-}
-
-#first-instance-helper label {
-  font-weight: normal;
-  font-size: 18px;
-  margin: 0;
-}
+/* Person listing page */
 
 .jumbotron-person-page {
   background: #f3f3f3;

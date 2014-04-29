@@ -3,44 +3,46 @@
 {% load i18n %}
 {% block content %}
 {% load markdown_deux_tags %}
-<div class="panel panel-default">
+<div class="panel panel-default message-detail">
   <div class="panel-heading">
-    <h1 class="panel-title">{{ message.subject }}</h1>
+    <dl class="dl-horizontal">
+      <dt>Subject</dt>
+      <dd>
+        <h1 class="panel-title">{{ message.subject }}</h1>
+      </dd>
+    </dl>
   </div>
   <div class="panel-body">
-    <p class="lead">{{ message.content|linebreaks }}</p>
-    <div class="sent_to">
-        {% trans 'This message was sent to' %}
-        <br />
-            {% for person in message.people %}
-            <span class="label label-default">{{ person.name }}</span>
-            {% endfor %}
-    </div>
+    <dl class="dl-horizontal">
+      <dt>Subject</dt>
+      <dd class="message_content">
+        {{ message.content|linebreaks }}
+      </dd>
+    </dl>
   </div>
   <div class="panel-footer">
-    <span class="author_name">
-        <small>
-            {% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
-        </small>
-    </span>
-    
+    <dl class="dl-horizontal">
+      <dt>{% trans 'Sent to:' %}</dt>
+      <dd>{% for person in message.people %}
+          <span class="message_to_person">{{ person.name }}</span>
+      {% endfor %}</dd>
+      <dt>{% trans 'Asked by:' %}</dt>
+      <dd>{{ message.author_name }}</dd>
+    </dl>
   </div>
 </div>
-
-
-
-
-
 
 <br />
 
 {% if message.answers.all %}
-<h3>{% trans "Answers" %}</h3>
+  <div class="message-answers">
+      <h3>{% trans "Answers" %}</h3>
+      {% for answer in message.answers.all %}
+          {% include "nuntium/answer/answer_in_list.html" with answer=answer %}
+      {% endfor %}
+</div>
 {% endif %}
-{% for answer in message.answers.all %}
-    {% include "nuntium/answer/answer_in_list.html" with answer=answer %}
-{% endfor %}
 
+<div class="getbacktotheinstance text-center"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}"><i class="glyphicon glyphicon-chevron-left"></i>{% blocktrans %}Get back to the messages.{% endblocktrans %} </a></div>
 
-<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}"><i class="icon-chevron-left"></i> {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
 {% endblock %}
