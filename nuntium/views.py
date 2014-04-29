@@ -6,6 +6,7 @@ from .models import WriteItInstance, Confirmation, OutboundMessage, Message, Mod
                             NewAnswerNotificationTemplate, ConfirmationTemplate
 from .forms import MessageCreateForm, MessageSearchForm, \
                             PerInstanceSearchForm
+from .user_section.views import WriteItInstanceCreateView
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
@@ -33,6 +34,13 @@ class HomeTemplateView(TemplateView):
 class WriteItInstanceListView(ListView):
     model = WriteItInstance
 
+
+class WriteItCreateInstanceView(WriteItInstanceCreateView):
+    """Override instance creation to redirect straight to the instance"""
+    def get_success_url(self):
+        return reverse('people_list', subdomain=self.object.slug)
+
+
 class WriteItInstanceDetailView(CreateView):
     form_class = MessageCreateForm
     model = WriteItInstance
@@ -49,18 +57,15 @@ class WriteItInstanceDetailView(CreateView):
         return self.object
 
 
-    def form_valid(self, form):
-        response = super(WriteItInstanceDetailView, self).form_valid(form)
-        moderations = Moderation.objects.filter(message=self.object)
-        if moderations.count() > 0 or self.object.writeitinstance.moderation_needed_in_all_messages:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
-        else:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
-        return response
+#     def form_valid(self, form):
+#         response = super(WriteItInstanceDetailView, self).form_valid(form)
+#         moderations = Moderation.objects.filter(message=self.object)
+#         if moderations.count() > 0 or self.object.writeitinstance.moderation_needed_in_all_messages:
+#             messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
+#         else:
+#             messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
+#         return response
 
-
-    def get_success_url(self):
-        return self.object.writeitinstance.get_absolute_url()
 
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
@@ -195,5 +200,34 @@ class MessagesPerPersonView(ListView):
 
     def get_context_data(self,**kwargs):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
+        context['person'] = self.person
+        return context
+
+
+class WriteItPeopleListView(ListView):
+    model = Person
+
+    def dispatch(self, *args, **kwargs):
+        self.subdomain = self.request.subdomain
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
+        return super(WriteItPeopleListView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = Person.objects.filter(
+            membership__writeitinstance=self.writeitinstance).order_by('name')
+        return qs
+
+
+class WriteItPersonDetailView(WriteItInstanceDetailView):
+    template_name='nuntium/person_detail.html'
+
+    def dispatch(self, *args, **kwargs):
+        self.person = Person.objects.get(id=self.kwargs['pk'])
+        self.subdomain = self.request.subdomain
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
+        return super(WriteItPersonDetailView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self,**kwargs):
+        context = super(WriteItPersonDetailView, self).get_context_data(**kwargs)
         context['person'] = self.person
         return context
