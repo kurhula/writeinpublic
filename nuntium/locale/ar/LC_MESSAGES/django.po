@@ -250,11 +250,11 @@ msgid "Tell me please about the new thing ..."
 msgstr ""
 
 #: templates/nuntium/instance_detail.html:70
-msgid "Is this message public?"
+msgid "Make this message public"
 msgstr ""
 
 #: templates/nuntium/instance_detail.html:74
-msgid "Submit Message"
+msgid "Send Message"
 msgstr ""
 
 #: templates/nuntium/instance_detail.html:82

@@ -142,12 +142,43 @@
   padding: 80px 15px 0;
 }
 
+.previous-messages {
+  /* Zarino has no idea what this section is for,
+  and it doesn't seem to work anyway, so he's hiding
+  it for the demo */
+  display: none;
+}
+
+.writing-panel {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .writing-panel .panel-body {
   padding: 20px;
 }
 
-.writing-panel form {
-  padding: 0 15px; /* compensate for -15px horizontal margins on form-groups */
+.message-form .form-group {
+  margin-bottom: 25px; /* more breathing space */
+}
+
+.message-form .row.last {
+  margin-top: 10px;
+}
+
+label[for="id_persons"] + ul {
+  padding-left: 0;
+}
+
+.form-group .chosen-container-multi .chosen-choices {
+  padding: 4px 8px;
+  border-color: #ccc;
+  line-height: 1.42;
+  border-radius: 4px;
+  color: #555;
+  background-image: none;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
 }
 
 .answer-in-list {
@@ -172,7 +203,7 @@
 @media screen and (min-width: 768px) {
   .profile-page-tab-content,
   .writing-panel .panel-body {
-    padding: 40px;
+    padding: 30px 40px;
   }
 }
 
