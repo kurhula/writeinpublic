@@ -5,7 +5,6 @@ python:
 services:
   - elasticsearch
   - rabbitmq
-  - mongodb
 install:
   - pip install -r requirements.txt
   - pip install MySQL-python
@@ -16,7 +15,6 @@ before_script:
   - mysql -e 'create database writeit;'
   - psql -c 'create database writeit;' -U postgres
 script:
-  - ./start_local_popit_api.bash
   - coverage run --source=nuntium,contactos,mailit manage.py test nuntium contactos mailit
   - coverage report -m
 after_script:
