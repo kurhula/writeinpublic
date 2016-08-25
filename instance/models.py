@@ -25,6 +25,14 @@ from contactos.models import Contact
 from mailit import MailChannel
 
 
+class PopoloPersonQuerySet(models.QuerySet):
+
+    def get_from_api_uri(self, uri_from_api):
+        return self.get(
+            identifiers__identifier=uri_from_api,
+            identifiers__scheme__in=['popit_url', 'popolo_uri'])
+
+
 class PopoloPerson(Person):
     class Meta:
         proxy = True
@@ -108,6 +116,7 @@ class PopoloPerson(Person):
             return new_url
         msg = "Could find no global identifier for PopoloPerson with ID {0}"
         raise PopoloIdentifier.DoesNotExist(msg.format(self.pk))
+
 
 def today_in_date_range(start_date, end_date):
     today = str(datetime.date.today())
