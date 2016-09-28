@@ -41,7 +41,7 @@ And visit http://127.0.0.1.xip.io:8000 on your host machine to use WriteIt.
 
 ### Background jobs
 
-    ./manage.py celery worker
+    celery -A writeit worker
 
 This handles syncing contact details from remote sources. If you
 have created a new instance and the contacts do not seem to be syncing
@@ -49,7 +49,7 @@ it is probably because a celery worker is not running.
 
 ### Scheduled jobs
 
-    ./manage.py celery beat
+    celery -A writeit beat
 
 This sends emails to recipients and periodically re-sync contacts from
 remote sources.
