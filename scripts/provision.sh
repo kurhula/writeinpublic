@@ -7,9 +7,6 @@ pwd
 now=$(date +"%T")
 echo "$now Running provision.sh"
 
-# Use the en_GB.utf8 locale
-sudo update-locale LANG=en_GB.utf8
-
 # Instructions from: https://www.elastic.co/guide/en/elasticsearch/reference/1.4/setup-repositories.html
 wget -qO - https://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
 echo 'deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main' | sudo tee /etc/apt/sources.list.d/elasticsearch.list
@@ -20,11 +17,11 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   git libffi-dev libssl-dev build-essential yui-compressor sqlite3 postfix \
   python-dev python-pip python-virtualenv \
   rabbitmq-server \
-  openjdk-7-jre elasticsearch \
+  openjdk-8-jre elasticsearch \
   gettext
 
 # Set virtualenv directory and create it if needed.
-virtualenv_dir="/home/vagrant/writeit-virtualenv"
+virtualenv_dir="/home/ubuntu/writeit-virtualenv"
 [[ -d "$virtualenv_dir" ]] || virtualenv "$virtualenv_dir"
 
 # Install the python requirements
