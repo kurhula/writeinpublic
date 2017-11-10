@@ -38,7 +38,10 @@ cd /vagrant
 # Make sure message files for other languages are compiled:
 "$virtualenv_dir/bin/python" /vagrant/manage.py compilemessages
 
+motd_file="/etc/update-motd.d/99-writeit-instructions"
+
 # Set shell login message
+echo '#!/bin/sh
 echo "-------------------------------------------------------
 Welcome to the WriteIt vagrant machine
 
@@ -59,8 +62,9 @@ Run celery beat with:
 Run the tests with:
   ./manage.py test nuntium contactos mailit
 
--------------------------------------------------------
-" | sudo tee /etc/motd.tail > /dev/null
+-------------------------------------------------------"
+' | sudo tee "$motd_file" > /dev/null
+sudo chmod +x "$motd_file"
 
 # Add cd /vagrant to ~/.bashrc
 grep -qG "cd /vagrant" "$HOME/.bashrc" || echo "cd /vagrant" >> "$HOME/.bashrc"
