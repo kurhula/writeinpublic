@@ -14,13 +14,6 @@ sudo update-locale LANG=en_GB.utf8
 wget -qO - https://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
 echo 'deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main' | sudo tee /etc/apt/sources.list.d/elasticsearch.list
 
-# Instructions from: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
-
-# Instructions from: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager
-wget -qO - https://deb.nodesource.com/setup | sudo bash -
-
 # Install the packages we need
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
@@ -29,7 +22,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   python-dev python-pip python-virtualenv \
   rabbitmq-server \
   openjdk-7-jre elasticsearch \
-  mongodb-org nodejs gettext
+  gettext
 
 # Set virtualenv directory and create it if needed.
 virtualenv_dir="/home/vagrant/writeit-virtualenv"
