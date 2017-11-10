@@ -16,7 +16,6 @@ echo 'deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main
 
 # Install the packages we need
 sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   git libffi-dev libssl-dev build-essential yui-compressor sqlite3 postfix \
   python-dev python-pip python-virtualenv \
