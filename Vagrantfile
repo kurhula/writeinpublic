@@ -1,8 +1,8 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
-$post_up_message = "** Your Vagrant box is ready to use! \o/ **
-Log in (with 'vagrant ssh') and follow the instructions."
+$post_up_message = '** Your Vagrant box is ready to use! \o/ **
+Log in (with `vagrant ssh`) and follow the instructions.'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/xenial64"
