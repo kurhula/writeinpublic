@@ -318,3 +318,34 @@ class MessageResourceTestCase(ResourceTestCase):
 
         self.assertEquals(response.status_code, 400)
         self.assertFalse(Message.objects.filter(author_name='Felipipoo'))
+
+    def test_get_list_of_messages_filtered_by_popolo_uri(self):
+        popolo_uri = 'http://example.com/popolo.json#person-123'
+        # Create a person with a popolo identifier
+        person = PopoloPerson.objects.create(name='Test')
+        person.identifiers.create(scheme='popolo_uri', identifier=popolo_uri)
+        # Create an extra message that we don't expect to see in the response
+        message = Message.objects.create(
+            content=u'Test Content',
+            author_name=u'Felipe',
+            author_email=u"falvarez@votainteligente.cl",
+            subject=u'Fiera es una perra feroz',
+            writeitinstance=self.writeitinstance,
+            persons=[person],
+            )
+        message.recently_confirmated()
+
+        # Fetch a filtered list of message from the API
+        url = '/api/v1/message/'
+        params = self.data.copy()
+        params.update({'person__popolo_uri': popolo_uri})
+        response = self.api_client.get(url, data=params)
+        self.assertValidJSONResponse(response)
+
+        expected_message = Message.public_objects.get(writeitinstance__in=self.user.writeitinstances.all(), person=person)
+        messages_from_api = self.deserialize(response)['objects']
+        self.assertEqual(len(messages_from_api), 1)
+        message_from_api = messages_from_api[0]
+        self.assertEqual(message_from_api['id'], expected_message.id)
+        self.assertEqual(len(message_from_api['people']), 1)
+        self.assertEqual(message_from_api['people'][0]['id'], person.id)

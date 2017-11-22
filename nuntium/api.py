@@ -206,6 +206,14 @@ class MessageResource(ModelResource):
                 )
             except ObjectDoesNotExist:
                 raise Http404("PopoloPerson does not exist")
+        if 'person__popolo_uri' in filters:
+            try:
+                person = queryset.get(
+                    identifiers__scheme='popolo_uri',
+                    identifiers__identifier=filters['person__popolo_uri'],
+                )
+            except ObjectDoesNotExist:
+                raise Http404("PopoloPerson does not exist")
         if person:
             result['person'] = person
         return result
