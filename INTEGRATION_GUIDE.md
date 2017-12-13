@@ -68,3 +68,9 @@ This is how [PlanningAlerts](https://github.com/openaustralia/planningalerts/) i
 A GET request is all that's needed to get a message and all its replies as JSON, e.g.
 
     http://writeit.ciudadanointeligente.org/api/v1/message/1234/?format=json&username=henare&api_key=ABC123
+
+### Fetching messages sent to a specific person
+
+To get a list of messages that were sent to a specific person you can provide a `?person__popolo_uri` GET parameter. The value of this parameter should be the URL encoded Popolo URI for the person. The Popolo URI is in the same format as the one used when creating new messages, e.g.
+
+    http://writeit.ciudadanointeligente.org/api/v1/instance/1/messages/?format=json&username=henare&api_key=ABC123&person__popolo_uri=https%3A%2F%2Feverypolitician-writeinpublic.herokuapp.com%2FAustralia%2FSenate%2Fpersons%2Fperson%2Fb6b705a5-0355-4f1c-8951-273aed19156d
