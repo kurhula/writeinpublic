@@ -14,14 +14,31 @@ echo 'deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main
 # Install the packages we need
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  git libffi-dev libssl-dev build-essential yui-compressor sqlite3 postfix \
-  python-dev python-pip python-virtualenv \
+  build-essential \
+  gettext \
+  git \
+  libffi-dev \
+  libssl-dev \
+  openjdk-8-jre \
+  postfix \
+  python-dev \
+  python-pip \
+  python-virtualenv \
   rabbitmq-server \
-  openjdk-8-jre elasticsearch \
-  gettext
+  sqlite3 \
+  yui-compressor
+
+# Install ES seaprately as this old version's repository has signature
+# failures that are not likely to be fixed as it is EOL.
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
+  elasticsearch
+
+# Ensure ES is running
+sudo systemctl enable elasticsearch
+sudo systemctl start elasticsearch
 
 # Set virtualenv directory and create it if needed.
-virtualenv_dir="/home/ubuntu/writeit-virtualenv"
+virtualenv_dir="/home/vagrant/writeit-virtualenv"
 [[ -d "$virtualenv_dir" ]] || virtualenv "$virtualenv_dir"
 
 # Install the python requirements
