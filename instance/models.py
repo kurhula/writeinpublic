@@ -301,7 +301,7 @@ class WriteItInstance(models.Model):
                 # Make sure any Contact objects for people who have been
                 # deleted are disabled:
                 Contact.objects.filter(
-                    writeitinstance=self.writeitinstance,
+                    writeitinstance=self,
                     person=person).update(enabled=False)
         except ConnectionError, e:
             self.do_something_with_a_vanished_popit_api_instance(popolo_source)
