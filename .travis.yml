@@ -11,6 +11,8 @@ services:
   - postgresql
 addons:
   postgresql: "9.6"
+jdk:
+  - openjdk8
 install:
   # Install and run Elasticsearch:
   - wget ${ES_DOWNLOAD_URL}
@@ -30,4 +32,3 @@ after_script:
   - coveralls --verbose
 env:
   - DB=postgres ES_VERSION=1.4.5 ES_DOWNLOAD_URL=https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
-  - DB=sqlite3 ES_VERSION=1.4.5 ES_DOWNLOAD_URL=https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
