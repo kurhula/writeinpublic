@@ -17,10 +17,6 @@ jdk:
 before_install:
   - wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.deb && sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb && sudo service elasticsearch restart
 install:
-  # Install and run Elasticsearch:
-  - wget ${ES_DOWNLOAD_URL}
-  - tar xzf elasticsearch-${ES_VERSION}.tar.gz
-  - elasticsearch-${ES_VERSION}/bin/elasticsearch &
   - pip install -r requirements.txt
   - pip install psycopg2
   - pip install -r requirements_testing.txt
