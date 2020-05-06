@@ -7,7 +7,7 @@ from django.http import Http404, HttpResponse
 from instance.models import WriteItInstance
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views import View
+from django.views.generic import View
 from mailit.exceptions import CouldNotFindIdentifier, TemporaryFailure
 from mailit.answer import OutboundMessageAnswer
 from mailit.bin.handleemail import EmailHandler
