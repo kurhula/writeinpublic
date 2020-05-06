@@ -12,7 +12,7 @@ from contactos.models import Contact
 
 from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
-from mailit.management.commands.handleemail import AnswerForManageCommand
+from mailit.management.answer import OutboundMessageAnswer
 from mailit.bin import config
 from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
 from mailit.models import BouncedMessageRecord
@@ -296,7 +296,7 @@ class BouncedMessageRecordTestCase(TestCase):
         f.close()
         self.bounced_email.replace(self.identifier.key, '')
 
-        self.handler = EmailHandler(answer_class=AnswerForManageCommand)
+        self.handler = EmailHandler(answer_class=OutboundMessageAnswer)
 
     def test_creation(self):
         bounced_message = BouncedMessageRecord.objects.create(
@@ -334,7 +334,7 @@ class BouncedMailInAmazonBug(TestCase):
         with open('mailit/tests/fixture/bounced_mail2.txt') as f:
             self.bounced_email += f.read()
         f.close()
-        self.handler = EmailHandler(answer_class=AnswerForManageCommand)
+        self.handler = EmailHandler(answer_class=OutboundMessageAnswer)
         self.answer = self.handler.handle(self.bounced_email)
         self.answer.send_back()
 
@@ -364,7 +364,7 @@ class BouncedMailInGmail(TestCase):
         with open('mailit/tests/fixture/bounced_mail.txt') as f:
             self.bounced_email += f.read()
         f.close()
-        self.handler = EmailHandler(answer_class=AnswerForManageCommand)
+        self.handler = EmailHandler(answer_class=OutboundMessageAnswer)
         self.answer = self.handler.handle(self.bounced_email)
         self.answer.send_back()
 
