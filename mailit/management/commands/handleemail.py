@@ -1,44 +1,13 @@
-from mailit.bin.handleemail import EmailAnswer, EmailHandler
-from mailit.models import BouncedMessageRecord
+from mailit.bin.handleemail import EmailHandler
 import logging
-from nuntium.models import OutboundMessageIdentifier, OutboundMessage, OutboundMessagePluginRecord, AnswerAttachment
 from django.core.management.base import BaseCommand
 import sys
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
 import traceback
-from django.core.files import File
 from mailit.exceptions import CouldNotFindIdentifier, TemporaryFailure
-
+from mailit.answer import OutboundMessageAnswer
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
-
-
-class AnswerForManageCommand(EmailAnswer):
-    def save(self):
-        answer = OutboundMessageIdentifier.create_answer(self.outbound_message_identifier, self.content_text)
-        return answer
-
-    def save_attachment(self, answer, attachment):
-        the_file = File(attachment)
-        answer_attachment = AnswerAttachment(answer=answer,
-                                content=the_file,
-                                name=attachment.name)
-        answer_attachment.save()
-
-    def report_bounce(self):
-        logging.info("Reporting bounce using a management command")
-        identifier = OutboundMessageIdentifier.objects.get(key=self.outbound_message_identifier)
-        outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
-        outbound_message.status = 'error'
-        outbound_message.save()
-        records = OutboundMessagePluginRecord.objects.filter(outbound_message=outbound_message)
-        for record in records:
-            record.try_again = True
-            record.save()
-        BouncedMessageRecord.objects.create(outbound_message=outbound_message, bounce_text=self.content_text)
-        contact = outbound_message.contact
-        contact.is_bounced = True
-        contact.save()
 
 
 class Command(BaseCommand):
@@ -61,7 +30,7 @@ class Command(BaseCommand):
             mail.attach('mail.txt', ''.join(lines), 'text/plain')
             mail.send()
 
-        handler = EmailHandler(answer_class=AnswerForManageCommand)
+        handler = EmailHandler(answer_class=OutboundMessageAnswer)
         try:
             answer = handler.handle(lines)
             answer.send_back()
