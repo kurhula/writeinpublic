@@ -17,8 +17,9 @@ RUN cd /tmp \
 COPY . /app
 
 RUN addgroup --system django \
-    && adduser --system --ingroup django django
-RUN chown -R django:django /app
+    && adduser --system --ingroup django django \
+    && mkdir /var/celerybeat \
+    && chown -R django:django /app /var/celerybeat
 USER django
 
 WORKDIR /app

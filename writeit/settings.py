@@ -346,7 +346,8 @@ EMAIL_BACKEND = env.str("", "django.core.mail.backends.smtp.EmailBackend")
 
 # CELERY CONFIGURATION
 
-CELERY_BROKER_URL = env.str("AMQP_URL", 'amqp://guest:guest@rabbitmq//')
+BROKER_URL = env.str("BROKER_URL", 'amqp://guest:guest@rabbitmq//')
+CELERY_BROKER_URL = BROKER_URL
 CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_TASK_SERIALIZER = 'pickle'
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'

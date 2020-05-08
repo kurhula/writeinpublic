@@ -45,7 +45,8 @@ services:
     build: .
     volumes:
       - .:/app
-    command: bin/wait-for-deps.sh celery -A writeit beat
+      - beat-data:/var/celerybeat
+    command: bin/wait-for-deps.sh celery -A writeit beat --pidfile= -s /var/celerybeat/celerybeat-schedule
     depends_on:
       - db
       - elasticsearch
@@ -93,3 +94,4 @@ volumes:
   db-data:
   elasticsearch-data:
   rabbitmq-data:
+  beat-data:
