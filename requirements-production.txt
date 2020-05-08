@@ -1,6 +1,0 @@
-MySQL-python
-#psycopg2
-gunicorn
-django-ses
-boto
-django-storages
