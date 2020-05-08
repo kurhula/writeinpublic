@@ -44,6 +44,8 @@ And visit http://127.0.0.1.xip.io:8000 on your host machine to use WriteIt.
 
 ### Background jobs
 
+Background job processes are also run by docker-compose in development.
+
 Background jobs are run by the Celery worker
 
     celery -A writeit worker

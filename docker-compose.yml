@@ -6,6 +6,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - web-attachments:/app/attachments
     ports:
       - "8000:8000"
     command: bin/wait-for-deps.sh ./manage.py runserver 0.0.0.0:8000
@@ -93,6 +94,7 @@ services:
         - 15672:15672
 
 volumes:
+  web-attachments:
   db-data:
   elasticsearch-data:
   rabbitmq-data:
