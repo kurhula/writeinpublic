@@ -15,6 +15,7 @@ services:
       - rabbitmq
     environment:
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq//
+      - SESSION_COOKIE_DOMAIN=127.0.0.1.xip.io
       - DATABASE_URL=postgresql://writeinpublic:devpassword@db/writeinpublic
       - DJANGO_DEBUG=True
       - DJANGO_DEBUG_TOOLBAR

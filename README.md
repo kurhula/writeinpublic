@@ -17,6 +17,16 @@ Installation instructions for developers are below. If you'd like to integrate W
 Local development using docker-compose
 ======================================
 
+This directory is mapped as a volume in the app. This can result in file permission errors like `EACCES: permission denied`. File permissions are generally based on UID integers and not usernames, so it doesn't matter what users are called, UIDs have to match or be mapped to the same numbers between the host and container.
+
+We want to avoid running as root in production (even inside a container) and we want production to be as similar as possible to dev and test.
+
+The easiest solution is to make this directory world-writable so that the container user can write to install/update stuff. Be aware of the security implications of this. e.g.
+
+    sudo find . -type d -exec chmod 777 '{}' \;
+
+Another good option is to specify the user ID to run as in the container. A persistent way to do that is by specifying `user: ${UID}:${GID}` in a `docker-compose.yml` file, perhaps used as an overlay, and specifying your host user's IDs in an environment file used by docker-compose, e.g. `.env`.
+
 Install database schema
 
     docker-compose run --rm web ./manage.py migrate
@@ -29,7 +39,7 @@ Then run the development server with:
 
     docker-compose up
 
-And visit http://localhost:8000 on your host machine to use WriteIt.
+And visit http://127.0.0.1.xip.io:8000 on your host machine to use WriteIt.
 
 
 ### Background jobs
@@ -109,6 +119,7 @@ Set up the database, creating an admin user when prompted:
 Compile all the available translations:
 
     ./manage.py compilemessages
+
 
 Troubleshooting database migration
 ----------------------------------

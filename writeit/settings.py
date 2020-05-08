@@ -247,11 +247,11 @@ if TESTING:
         'django_nose',
         )
 
-#SEARCH INDEX WITH ELASTICSEARCH
+# SEARCH INDEX WITH ELASTICSEARCH
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 ELASTICSEARCH_URL = env.str("ELASTICSEARCH_URL"),
-ELASTICSEARCH_INDEX = env.str("ELASTICSEARCH_URL"),
+ELASTICSEARCH_INDEX = env.str("ELASTICSEARCH_INDEX"),
 
 HAYSTACK_CONNECTIONS = {
     'default': {
@@ -342,7 +342,7 @@ if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS'] == 'True':
 if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL'] == 'True':
     EMAIL_USE_SSL = True
 
-EMAIL_BACKEND = env.str("", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_BACKEND = env.str("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 
 # CELERY CONFIGURATION
 
