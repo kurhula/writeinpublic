@@ -14,32 +14,27 @@ Future uses are in [congresoabierto](http://www.congresoabierto.cl) to replace t
 Installation instructions for developers are below. If you'd like to integrate WriteIt with your civic tech application it's recommended that you use the [hosted version](http://writeit.ciudadanointeligente.org/en/) and read `INTEGRATION_GUIDE.md` in this directory for integration instructions.
 
 
-Quick Installation (Vagrant)
-============================
+Local development using docker-compose
+======================================
 
-Assuming [you have Vagrant installed](http://docs.vagrantup.com/v2/installation/), run the following:
+Install database schema
 
-    git clone https://github.com/ciudadanointeligente/write-it.git
-    cd write-it
-    vagrant up
+    docker-compose run --rm web ./manage.py migrate
 
-Vagrant will automatically install WriteIt and all of its dependencies. This can take a few minutes.
+You can load some fixtures with:
 
-Once it’s complete, log into the virtual machine with:
-
-    vagrant ssh
-
-Once you’re inside the virtual machine, you can load some fixtures with:
-
-    ./manage.py loaddata example_data.yaml
+    docker-compose run --rm web ./manage.py loaddata example_data.yaml
 
 Then run the development server with:
 
-    ./manage.py runserver 0.0.0.0:8000
+    docker-compose up
 
-And visit http://127.0.0.1.xip.io:8000 on your host machine to use WriteIt.
+And visit http://localhost:8000 on your host machine to use WriteIt.
+
 
 ### Background jobs
+
+Background jobs are run by the Celery worker
 
     celery -A writeit worker
 
@@ -49,14 +44,16 @@ it is probably because a celery worker is not running.
 
 ### Scheduled jobs
 
+Scheduled jobs are queued for the worker by Celery beat
+
     celery -A writeit beat
 
 This sends emails to recipients and periodically re-sync contacts from
 remote sources.
 
 
-Manual Installation (without Vagrant)
-=====================================
+Manual Installation (without docker-compose)
+============================================
 
 System Requirements
 -------------------
