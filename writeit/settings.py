@@ -346,11 +346,12 @@ EMAIL_BACKEND = env.str("", "django.core.mail.backends.smtp.EmailBackend")
 
 # CELERY CONFIGURATION
 
-BROKER_URL = env.str("BROKER_URL", 'amqp://guest:guest@rabbitmq//')
-CELERY_BROKER_URL = BROKER_URL
+CELERY_BROKER_URL = env.str("CELERY_BROKER_URL", 'amqp://guest:guest@rabbitmq//')
+BROKER_URL = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_TASK_SERIALIZER = 'pickle'
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+
 
 from celery.schedules import crontab
 
