@@ -14,6 +14,7 @@ env = environ.Env()
 DEBUG = env("DJANGO_DEBUG")
 TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+TESTING = 'test' in sys.argv
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
@@ -108,6 +109,8 @@ STATICFILES_FINDERS = (
     'pipeline.finders.PipelineFinder',
 )
 
+STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage' if TESTING else 'pipeline.storage.PipelineCachedStorage'
+
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
 PIPELINE_COMPILERS = (
@@ -193,9 +196,6 @@ WSGI_APPLICATION = 'writeit.wsgi.application'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
-TESTING = 'test' in sys.argv
-
-STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage' if TESTING else 'pipeline.storage.PipelineCachedStorage'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -344,6 +344,7 @@ if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL'] == 'True':
 
 EMAIL_BACKEND = env.str("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 
+
 # CELERY CONFIGURATION
 
 CELERY_BROKER_URL = env.str("CELERY_BROKER_URL", 'amqp://guest:guest@rabbitmq//')
@@ -426,7 +427,9 @@ WEB_BASED = True
 API_BASED = False
 
 if TESTING:
-    from .testing_settings import *  # noqa
+    LOCAL_ELASTICSEARCH = True
+    CELERY_ALWAYS_EAGER = True
+
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

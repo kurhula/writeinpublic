@@ -13,7 +13,7 @@ from nuntium.plugins import OutputPlugin
 from contactos.models import ContactType
 from writeit_utils import escape_dictionary_values
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 def process_content(content, indent='    ', width=66):
@@ -70,7 +70,7 @@ class MailChannel(OutputPlugin):
                     'error': error.__unicode__()
                     }
                 mail_admins("Problem sending an email", log)
-                logger.info(log)
+                logging.info(log)
                 return False, True
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
@@ -104,7 +104,7 @@ class MailChannel(OutputPlugin):
                 'from': from_email,
                 'to': outbound_message.contact.value,
                 }
-            logger.info(log)
+            logging.info(log)
         except SMTPServerDisconnected, e:
             return False, False
         except SMTPResponseException, e:
@@ -121,7 +121,7 @@ class MailChannel(OutputPlugin):
                 'error': e.__unicode__()
                 }
             mail_admins("Problem sending an email", log)
-            logger.info(log)
+            logging.info(log)
             return False, True
 
         return True, None
