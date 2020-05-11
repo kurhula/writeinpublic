@@ -1,11 +1,11 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from django.core.management import call_command
-from ..management.commands.handleemail import AnswerForManageCommand
 from nuntium.models import OutboundMessage, Answer
 from mock import patch
 from django.core import mail
 from django.test.utils import override_settings
+from mailit.answer import OutboundMessageAnswer
 from mailit.models import RawIncomingEmail
 from mailit.bin.handleemail import EmailHandler
 from mailit.exceptions import TemporaryFailure
@@ -16,7 +16,7 @@ class ManagementCommandAnswer(TestCase):
         super(ManagementCommandAnswer, self).setUp()
 
     def test_create_answer_for_management_command(self):
-        email_answer = AnswerForManageCommand()
+        email_answer = OutboundMessageAnswer()
         email_answer.subject = 'prueba4'
         email_answer.content_text = 'prueba4lafieritaespeluda'
         email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
@@ -37,7 +37,7 @@ class ManagementCommandAnswerBehaviour(TestCase):
         super(ManagementCommandAnswerBehaviour, self).setUp()
         self.outbound_message = OutboundMessage.objects.get(id=1)
         self.identifier = self.outbound_message.outboundmessageidentifier
-        self.email_answer = AnswerForManageCommand()
+        self.email_answer = OutboundMessageAnswer()
         self.email_answer.subject = 'prueba4'
         self.email_answer.content_text = 'prueba4lafieritaespeluda'
         self.email_answer.outbound_message_identifier = self.identifier.key
@@ -187,6 +187,6 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertNotIn('>', the_answer.content)
 
     def test_temporary_failure_raises_temp_fail_error(self):
-        handler = EmailHandler(answer_class=AnswerForManageCommand)
+        handler = EmailHandler(answer_class=OutboundMessageAnswer)
         with self.assertRaises(TemporaryFailure):
             handler.handle(temporary_fail_mock())

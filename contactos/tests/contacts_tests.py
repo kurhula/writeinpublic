@@ -7,8 +7,8 @@ from django.utils.translation import ugettext as _
 from django.core import mail
 from django.conf import settings
 from nuntium.models import OutboundMessage, Message, OutboundMessageIdentifier
+from mailit.answer import OutboundMessageAnswer
 from mailit.bin.handleemail import EmailHandler
-from mailit.management.commands.handleemail import AnswerForManageCommand
 from ..forms import ContactUpdateForm, ContactCreateForm
 from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
@@ -232,7 +232,7 @@ class ResendOutboundMessages(TestCase):
         with open('mailit/tests/fixture/bounced_mail.txt') as f:
             self.bounced_email += f.read()
         f.close()
-        self.handler = EmailHandler(answer_class=AnswerForManageCommand)
+        self.handler = EmailHandler(answer_class=OutboundMessageAnswer)
         self.answer = self.handler.handle(self.bounced_email)
         self.answer.send_back()
 

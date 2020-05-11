@@ -39,11 +39,13 @@ class MailitTemplateUpdateView(UpdateView):
 
 
 class IncomingMail(View):
+    def get(self, request):
+        return HttpResponse()
+
     def post(self, request):
-        print(request.body)  # TODO: clean up print statement
         handler = EmailHandler(answer_class=OutboundMessageAnswer)
         try:
-            answer = handler.handle(request.body)
+            answer = handler.handle(request.POST['email'])
             answer.send_back()
         except CouldNotFindIdentifier:
             pass

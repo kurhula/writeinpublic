@@ -1,7 +1,7 @@
 # coding=utf-8
 from nuntium.models import OutboundMessage
-from mailit.management.commands.handleemail import AnswerForManageCommand
 from global_test_case import GlobalTestCase as TestCase
+from mailit.answer import OutboundMessageAnswer
 from mailit.bin.handleemail import EmailHandler
 
 
@@ -15,7 +15,7 @@ class ParsingMailsWithAttachments(TestCase):
         with open('mailit/tests/fixture/mail_with_attachments.txt') as f:
             self.mail_with_attachments += f.read()
         f.close()
-        self.handler = EmailHandler(answer_class=AnswerForManageCommand)
+        self.handler = EmailHandler(answer_class=OutboundMessageAnswer)
 
     def test_handle_mail_with_attachments(self):
         '''Handle mails with attachments creates some'''

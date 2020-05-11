@@ -2,9 +2,11 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.views.decorators.csrf import csrf_exempt
 
 from tastypie.api import Api
 
+from mailit.views import IncomingMail
 from nuntium.views import RootRedirectView
 from nuntium.api import WriteItInstanceResource, MessageResource, AnswerCreationResource, HandleBouncesResource, PersonResource
 
@@ -28,6 +30,7 @@ urlpatterns = patterns('',
 
     # TODO: These can probably be removed at some point.
     url(r'^contactos/', include('contactos.urls')),
+    url(r'^incoming_mail/$', csrf_exempt(IncomingMail.as_view()), name='incoming_mail'),
 )
 
 urlpatterns += i18n_patterns('',
