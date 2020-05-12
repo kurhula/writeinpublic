@@ -9,14 +9,13 @@ services:
       - web-attachments:/app/attachments
     ports:
       - "8000:8000"
-    command: bin/wait-for-deps.sh ./manage.py runserver 0.0.0.0:8000
+    command: bin/wait-for-deps.sh bin/prestart.sh ./manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
       - elasticsearch
       - rabbitmq
     environment:
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq//
-      - SESSION_COOKIE_DOMAIN=127.0.0.1.xip.io
       - DATABASE_URL=postgresql://writeinpublic:devpassword@db/writeinpublic
       - DJANGO_DEBUG=True
       - DJANGO_DEBUG_TOOLBAR
@@ -26,6 +25,7 @@ services:
       - ELASTICSEARCH_INDEX=writeinpublic
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
       - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+      - SESSION_COOKIE_DOMAIN=127.0.0.1.xip.io
 
   worker:
     build: .
