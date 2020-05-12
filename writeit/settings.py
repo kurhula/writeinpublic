@@ -11,7 +11,7 @@ import environ
 
 env = environ.Env()
 
-DEBUG = env("DJANGO_DEBUG", False)
+DEBUG = env.bool("DJANGO_DEBUG", False)
 TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 TESTING = 'test' in sys.argv
