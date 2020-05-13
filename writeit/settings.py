@@ -19,9 +19,7 @@ TESTING = 'test' in sys.argv
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+ADMINS = [x.split(':') for x in env.list('DJANGO_ADMINS', default=[])]
 
 MANAGERS = ADMINS
 
