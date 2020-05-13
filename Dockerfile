@@ -15,8 +15,10 @@ RUN cd /tmp \
     && pip install -r requirements.txt
 
 COPY . /app
-python manage.py compilemessages
-python manage.py collectstatic --noinput
+
+WORKDIR /app
+
+RUN python manage.py compilemessages
 
 RUN addgroup --system django \
     && adduser --system --ingroup django django \
@@ -24,7 +26,6 @@ RUN addgroup --system django \
     && chown -R django:django /var /app
 USER django
 
-WORKDIR /app
 
 EXPOSE 5000
 CMD /app/bin/start.sh
