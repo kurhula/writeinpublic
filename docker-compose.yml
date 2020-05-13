@@ -21,7 +21,6 @@ services:
       - DJANGO_DEBUG_TOOLBAR
       - DJANGO_SECRET_KEY=not-secret-in-dev
       - DJANGO_TESTING
-      - DJANGO_WHITENOISE_AUTOREFRESH=True
       - ELASTICSEARCH_INDEX=writeinpublic
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
       - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
@@ -31,6 +30,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - web-attachments:/app/attachments
     command: bin/wait-for-deps.sh celery -A writeit worker
     depends_on:
       - db
