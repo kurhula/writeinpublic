@@ -14,32 +14,43 @@ Future uses are in [congresoabierto](http://www.congresoabierto.cl) to replace t
 Installation instructions for developers are below. If you'd like to integrate WriteIt with your civic tech application it's recommended that you use the [hosted version](http://writeit.ciudadanointeligente.org/en/) and read `INTEGRATION_GUIDE.md` in this directory for integration instructions.
 
 
-Quick Installation (Vagrant)
-============================
+Local development using docker-compose
+======================================
 
-Assuming [you have Vagrant installed](http://docs.vagrantup.com/v2/installation/), run the following:
+This directory is mapped as a volume in the app. This can result in file permission errors like `EACCES: permission denied`. File permissions are generally based on UID integers and not usernames, so it doesn't matter what users are called, UIDs have to match or be mapped to the same numbers between the host and container.
 
-    git clone https://github.com/ciudadanointeligente/write-it.git
-    cd write-it
-    vagrant up
+We want to avoid running as root in production (even inside a container) and we want production to be as similar as possible to dev and test.
 
-Vagrant will automatically install WriteIt and all of its dependencies. This can take a few minutes.
+The easiest solution is to make this directory world-writable so that the container user can write to install/update stuff. Be aware of the security implications of this. e.g.
 
-Once it’s complete, log into the virtual machine with:
+    sudo find . -type d -exec chmod 777 '{}' \;
 
-    vagrant ssh
+Another good option is to specify the user ID to run as in the container. A persistent way to do that is by specifying `user: ${UID}:${GID}` in a `docker-compose.yml` file, perhaps used as an overlay, and specifying your host user's IDs in an environment file used by docker-compose, e.g. `.env`.
 
-Once you’re inside the virtual machine, you can load some fixtures with:
+Install database schema
 
-    ./manage.py loaddata example_data.yaml
+    docker-compose run --rm web ./manage.py migrate
+
+Compile translations
+
+    docker-compose run --rm web ./manage.py compilemessages
+
+You can load some fixtures with:
+
+    docker-compose run --rm web ./manage.py loaddata example_data.yaml
 
 Then run the development server with:
 
-    ./manage.py runserver 0.0.0.0:8000
+    docker-compose up
 
 And visit http://127.0.0.1.xip.io:8000 on your host machine to use WriteIt.
 
+
 ### Background jobs
+
+Background job processes are also run by docker-compose in development.
+
+Background jobs are run by the Celery worker
 
     celery -A writeit worker
 
@@ -49,14 +60,16 @@ it is probably because a celery worker is not running.
 
 ### Scheduled jobs
 
+Scheduled jobs are queued for the worker by Celery beat
+
     celery -A writeit beat
 
 This sends emails to recipients and periodically re-sync contacts from
 remote sources.
 
 
-Manual Installation (without Vagrant)
-=====================================
+Manual Installation (without docker-compose)
+============================================
 
 System Requirements
 -------------------
@@ -112,6 +125,7 @@ Set up the database, creating an admin user when prompted:
 Compile all the available translations:
 
     ./manage.py compilemessages
+
 
 Troubleshooting database migration
 ----------------------------------
