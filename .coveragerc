@@ -2,4 +2,4 @@
 [run]
 source=nuntium,contactos,mailit
 omit = ../*migrations*
-data_file = test/.coverage
+data_file = /var/coverage/.coverage

@@ -31,6 +31,10 @@ Install database schema
 
     docker-compose run --rm web ./manage.py migrate
 
+Compile translations
+
+    docker-compose run --rm web ./manage.py compilemessages
+
 You can load some fixtures with:
 
     docker-compose run --rm web ./manage.py loaddata example_data.yaml

@@ -10,7 +10,7 @@ services:
       - web-coverage:/var/coverage
     ports:
       - "8000:8000"
-    command: bin/wait-for-deps.sh bin/prestart.sh ./manage.py runserver 0.0.0.0:8000
+    command: bin/wait-for-deps.sh ./manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
       - elasticsearch

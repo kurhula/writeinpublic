@@ -15,6 +15,8 @@ RUN cd /tmp \
     && pip install -r requirements.txt
 
 COPY . /app
+python manage.py compilemessages
+python manage.py collectstatic --noinput
 
 RUN addgroup --system django \
     && adduser --system --ingroup django django \
