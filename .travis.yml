@@ -12,4 +12,4 @@ after_script:
   - docker-compose logs db elasticsearch
 
   # Upload code coverage data to codecov.io
-  - "docker-compose run --rm `bash <(curl -s https://codecov.io/env)` web codecov"
+  - "docker-compose run --rm `bash <(curl -s https://codecov.io/env)` web codecov --file /var/coverage/.coverage"

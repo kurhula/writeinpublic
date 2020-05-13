@@ -22,7 +22,7 @@ RUN python manage.py compilemessages
 
 RUN addgroup --system django \
     && adduser --system --ingroup django django \
-    && mkdir -p /var/celerybeat /var/coverage\
+    && mkdir -p /var/celerybeat /var/coverage /app/attachments \
     && chown -R django:django /var /app
 USER django
 
