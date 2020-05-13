@@ -308,6 +308,20 @@ LOGGING = {
     }
 }
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+SENTRY_DSN = env.str("SENTRY_DSN", None)
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
+
 # POPIT TESTING RELATED
 TEST_POPIT_API_HOST_IP = '127.0.0.1'
 TEST_POPIT_API_PORT = '3000'
