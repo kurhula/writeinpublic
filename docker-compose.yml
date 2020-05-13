@@ -25,6 +25,7 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
       - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
       - SESSION_COOKIE_DOMAIN=127.0.0.1.xip.io
+    user: ${CURRENT_UID}
 
   worker:
     build: .
@@ -43,6 +44,7 @@ services:
       - ELASTICSEARCH_INDEX=writeinpublic
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
       - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+    user: ${CURRENT_UID}
 
   beat:
     build: .
@@ -61,6 +63,7 @@ services:
       - ELASTICSEARCH_INDEX=writeinpublic
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
       - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+    user: ${CURRENT_UID}
 
   db:
     image: postgres:9.6
