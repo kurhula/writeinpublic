@@ -13,6 +13,31 @@ Future uses are in [congresoabierto](http://www.congresoabierto.cl) to replace t
 
 Installation instructions for developers are below. If you'd like to integrate WriteIt with your civic tech application it's recommended that you use the [hosted version](http://writeit.ciudadanointeligente.org/en/) and read `INTEGRATION_GUIDE.md` in this directory for integration instructions.
 
+Production deployment
+=====================
+
+Provide these environment variables:
+
+| Key                   | Description
+| ----------------------|----------------
+| DATABASE_URL          | e.g `postgresql://user:password@hostname/dbname`
+| DEFAULT_FROM_DOMAIN   | e.g. `writeinpublic.yourdomain.com`
+| DJANGO_SECRET_KEY     | Must be secret
+| DJANGO_ADMINS         | comma-separated list of name and email, e.g. `Bob:bob@example.com,Sally:sally@example.com`
+| ELASTICSEARCH_INDEX   | e.g. `writeinpublic-prod`
+| ELASTICSEARCH_URL     | e.g. `http://elasticsearch.host.com:9200/`
+| EMAIL_HOST            |
+| EMAIL_HOST_PASSWORD   |
+| EMAIL_HOST_USER       |
+| EMAIL_USE_TLS         | True if you provide the string `True`
+| SENTRY_DSN            | Optional - provide the DSN to enable Sentry error logging
+| SESSION_COOKIE_DOMAIN | start with dot to support subdomains e.g. `.writeinpublic.yourtdomain.com`
+| TIME_ZONE             | Optional - e.g. `Africa/Johannesburg`
+
+Run the django web service, the celery worker, and celery beat for scheduled tasks.
+
+Incoming mail can be delivered using the `mailit` manage command `handeemail` which takes an email MIME object on standard input - call once per email. This can be used for example with the Exim .forward pipe transport.
+
 
 Local development using docker-compose
 ======================================
