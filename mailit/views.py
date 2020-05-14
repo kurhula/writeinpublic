@@ -55,8 +55,9 @@ class IncomingMail(View):
 
     def post(self, request):
         handler = EmailHandler(answer_class=OutboundMessageAnswer)
+        email = request.POST['email']
+
         try:
-            email = request.POST['email']
             logger.debug("SendGrid Inbound mail webhook POST email\n\n%s" % email)
             answer = handler.handle(email)
             answer.send_back()
@@ -72,7 +73,7 @@ class IncomingMail(View):
                 settings.DEFAULT_FROM_EMAIL,  # From
                 [a[1] for a in settings.ADMINS],  # To
                 )
-            mail.attach('mail.txt', ''.join(email), 'text/plain')
+            mail.attach('mail.txt', email, 'text/plain')
             mail.send()
             raise e
 
