@@ -7,7 +7,7 @@ from nuntium.models import Answer, OutboundMessage
 from ..bin import config
 from django.contrib.auth.models import User
 from mailit.bin.handleemail import EmailAnswer
-from mailit.management.commands.handleemail import AnswerForManageCommand
+from mailit.answer import OutboundMessageAnswer
 from mock import patch
 
 
@@ -94,7 +94,7 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
     def test_it_relates_it_to_an_answer(self):
         '''After handling email the answer should be related'''
 
-        handler = EmailHandler(answer_class=AnswerForManageCommand)
+        handler = EmailHandler(answer_class=OutboundMessageAnswer)
         email_answer = handler.handle(self.email_content)
         email_answer.send_back()
         raw_emails = RawIncomingEmail.objects.filter(message_id=email_answer.message_id)

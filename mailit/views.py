@@ -1,12 +1,23 @@
-from django.views.generic.edit import UpdateView
-from .models import MailItTemplate
+import logging
+
 from .forms import MailitTemplateForm
-from subdomains.utils import reverse
-from django.shortcuts import get_object_or_404
-from django.http import Http404
-from instance.models import WriteItInstance
+from .models import MailItTemplate
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.mail.message import EmailMultiAlternatives
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
+from django.views.generic import View
+from django.views.generic.edit import UpdateView
+from instance.models import WriteItInstance
+from mailit.answer import OutboundMessageAnswer
+from mailit.bin.handleemail import EmailHandler
+from mailit.exceptions import CouldNotFindIdentifier
+from subdomains.utils import reverse
+import traceback
+
+logger = logging.getLogger(__name__)
 
 
 class MailitTemplateUpdateView(UpdateView):
@@ -32,3 +43,37 @@ class MailitTemplateUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('writeitinstance_template_update', subdomain=self.writeitinstance.slug)
+
+
+class IncomingMail(View):
+    """
+    https://sendgrid.com/docs/API_Reference/Parse_Webhook/inbound_email.html
+    """
+    def get(self, request):
+        logger.info("SendGrid Inbound mail webhook GET %r", request.GET)
+        return HttpResponse()
+
+    def post(self, request):
+        handler = EmailHandler(answer_class=OutboundMessageAnswer)
+        try:
+            email = request.POST['email']
+            logger.debug("SendGrid Inbound mail webhook POST email\n\n%s" % email)
+            answer = handler.handle(email)
+            answer.send_back()
+        except CouldNotFindIdentifier as e:
+            logger.warn(e)
+        except Exception as e:
+            tb = traceback.format_exc()
+            text_content = "Error the traceback was:\n" + tb
+            #mail_admins('Error handling incoming email', html_message, html_message=html_message)
+            subject = "Error handling incoming email"
+            mail = EmailMultiAlternatives('%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject),
+                text_content,  # content
+                settings.DEFAULT_FROM_EMAIL,  # From
+                [a[1] for a in settings.ADMINS],  # To
+                )
+            mail.attach('mail.txt', ''.join(email), 'text/plain')
+            mail.send()
+            raise e
+
+        return HttpResponse()
