@@ -43,18 +43,21 @@ class MailitTemplateUpdateView(UpdateView):
 
 
 class IncomingMail(View):
+    """
+    https://sendgrid.com/docs/API_Reference/Parse_Webhook/inbound_email.html
+    """
     def get(self, request):
+        logger.info("SendGrid Inbound mail webhook GET %r", request.GET)
         return HttpResponse()
 
     def post(self, request):
         handler = EmailHandler(answer_class=OutboundMessageAnswer)
         try:
             email = request.POST['email']
-            logger.debug(email)
+            logger.debug("SendGrid Inbound mail webhook POST email\n\n%s" % email)
             answer = handler.handle(email)
             answer.send_back()
         except CouldNotFindIdentifier as e:
             logger.warn(e)
-        except TemporaryFailure as e:
-            logger.warn(e)
+
         return HttpResponse()
