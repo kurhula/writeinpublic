@@ -36,7 +36,23 @@ Provide these environment variables:
 
 Run the django web service, the celery worker, and celery beat for scheduled tasks.
 
-Incoming mail can be delivered using the `mailit` manage command `handeemail` which takes an email MIME object on standard input - call once per email. This can be used for example with the Exim .forward pipe transport.
+
+Handle incoming mail
+--------------------
+
+Incoming mail can be delivered using the `mailit` manage command `handeemail` or via HTTP POST webhook.
+
+
+### Manage command
+
+The handleemail command takes an email MIME object on standard input - call once per email. This can be used for example with the Exim .forward pipe transport.
+
+
+### Sengrid inbound parse (raw) webhook
+
+Configure the Inbound Parse webhook to POST to /mailit/inbound/sendgrid/raw/ on the central domain.
+
+Make sure to select RAW format.
 
 
 Local development using docker-compose
