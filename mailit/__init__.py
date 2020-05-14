@@ -13,7 +13,7 @@ from nuntium.plugins import OutputPlugin
 from contactos.models import ContactType
 from writeit_utils import escape_dictionary_values
 
-logging.basicConfig(filename="send_mails.log", level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 
 def process_content(content, indent='    ', width=66):

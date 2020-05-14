@@ -1,0 +1,9 @@
+build-essential
+gettext
+git
+libffi-dev
+libpq-dev
+libssl-dev
+python-dev
+python-pip
+yui-compressor

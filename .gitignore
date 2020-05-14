@@ -18,7 +18,7 @@ src
 
 .vagrant/
 
-writeit/static/
+writeit/staticfiles/
 attachments/
 
 # Django settings files

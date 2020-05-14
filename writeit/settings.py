@@ -7,41 +7,36 @@ import sys
 import os
 from django.conf.global_settings import LANGUAGES
 from django.utils.translation import to_locale
-DEBUG = True
+import environ
+
+env = environ.Env()
+
+DEBUG = env.bool("DJANGO_DEBUG", False)
 TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+TESTING = 'test' in sys.argv
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '^1rqg8ctiq=#11c*=1mz5pyyry%)t%z^%nrhmh=q%g@r@bej1_'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+ADMINS = [x.split(':') for x in env.list('DJANGO_ADMINS', default=[])]
 
 MANAGERS = ADMINS
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'writeit.db',                    # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
-    }
+    'default': env.db(),
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # or if not expecting simply ['localhost', '127.0.0.1', '[::1]'].
 # See https://docs.djangoproject.com/en/1.8/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['127.0.0.1.xip.io']
+ALLOWED_HOSTS = ["*"] # We rely on the upstream proxy to restrict hostnames for us
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = env.str("TIME_ZONE", 'America/Chicago')
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -90,7 +85,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -103,7 +98,6 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
@@ -112,6 +106,8 @@ STATICFILES_FINDERS = (
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'pipeline.finders.PipelineFinder',
 )
+
+STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage' if TESTING else 'pipeline.storage.PipelineCachedStorage'
 
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
@@ -198,9 +194,6 @@ WSGI_APPLICATION = 'writeit.wsgi.application'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
-TESTING = 'test' in sys.argv
-
-STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage' if TESTING else 'pipeline.storage.PipelineCachedStorage'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -252,26 +245,19 @@ if TESTING:
         'django_nose',
         )
 
-#SEARCH INDEX WITH ELASTICSEARCH
+# SEARCH INDEX WITH ELASTICSEARCH
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
-if TESTING:
-    HAYSTACK_CONNECTIONS = {
-        'default': {
-            'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-            'URL': 'http://127.0.0.1:9200/',
-            'INDEX_NAME': 'haystack-testing',
-        },
-    }
-    HAYSTACK_SIGNAL_PROCESSOR = 'global_test_case.CeleryTestingSignalProcessor'
-else:
-    HAYSTACK_CONNECTIONS = {
-        'default': {
-            'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-            'URL': 'http://127.0.0.1:9200/',
-            'INDEX_NAME': 'haystack',
-        },
-    }
+ELASTICSEARCH_URL = env.str("ELASTICSEARCH_URL")
+ELASTICSEARCH_INDEX = env.str("ELASTICSEARCH_INDEX")
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': ELASTICSEARCH_URL,
+        'INDEX_NAME': ELASTICSEARCH_INDEX,
+    },
+}
 
 #Testing with django
 TEST_RUNNER = 'global_test_case.WriteItTestRunner'
@@ -320,6 +306,20 @@ LOGGING = {
     }
 }
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+SENTRY_DSN = env.str("SENTRY_DSN", None)
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
+
 # POPIT TESTING RELATED
 TEST_POPIT_API_HOST_IP = '127.0.0.1'
 TEST_POPIT_API_PORT = '3000'
@@ -332,22 +332,39 @@ TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api/v0.1/export.json" % (
     )
 
 # Email settings
-DEFAULT_FROM_EMAIL = 'mailer@example.com'
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", 'mailer@example.com')
 
 # DEFAULT_FROM_DOMAIN
-DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
+DEFAULT_FROM_DOMAIN = env.str("DEFAULT_FROM_DOMAIN", 'mailit.ciudadanointeligente.org')
 
 # In some cases it is needed that all emails come from one single
 # email address, such is the case when you have just verified a single sender
-SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = False
+SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = env.bool("SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL", False)
+
+if 'EMAIL_HOST' in os.environ:
+    EMAIL_HOST = os.environ['EMAIL_HOST']
+if 'EMAIL_PORT' in os.environ:
+    EMAIL_PORT = os.environ['EMAIL_PORT']
+if 'EMAIL_HOST_USER' in os.environ:
+    EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+if 'EMAIL_HOST_PASSWORD' in os.environ:
+    EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS'] == 'True':
+    EMAIL_USE_TLS = True
+if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL'] == 'True':
+    EMAIL_USE_SSL = True
+
+EMAIL_BACKEND = env.str("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 
 
 # CELERY CONFIGURATION
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+CELERY_BROKER_URL = env.str("CELERY_BROKER_URL", 'amqp://guest:guest@rabbitmq//')
+BROKER_URL = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_TASK_SERIALIZER = 'pickle'
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+
 
 from celery.schedules import crontab
 
@@ -393,18 +410,18 @@ INCOMING_EMAIL_LOGGING = 'None'
 EXTRA_APPS = ()
 
 
-GOOGLE_ANALYTICS_PROPERTY_ID = None # Override this in local_settings.py or environment.
+GOOGLE_ANALYTICS_PROPERTY_ID = env.str("GOOGLE_ANALYTICS_PROPERTY_ID", None)
 
 # SOCIAL AUTH DETAILS
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'Key'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'S3Cr3t'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", None)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", None)
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-    )
+)
 
-SESSION_COOKIE_DOMAIN = '.127.0.0.1.xip.io'
+SESSION_COOKIE_DOMAIN = env.str("SESSION_COOKIE_DOMAIN", "localhost")
 
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = True
@@ -422,75 +439,19 @@ WEB_BASED = True
 API_BASED = False
 
 if TESTING:
-    from .testing_settings import *  # noqa
+    LOCAL_ELASTICSEARCH = True
+    CELERY_ALWAYS_EAGER = True
+    ELASTICSEARCH_INDEX += "-test"
 
-try:
-    from .local_settings import *  # noqa
-    INSTALLED_APPS += EXTRA_APPS
-except ImportError:
-    pass
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-
-### HEROKU CONFIGURATION
-
-if 'DATABASE_URL' in os.environ:
-    # I thought that in this way I could define that we were in an heroku environment
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config()
-
-    # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-    # Allow all host headers
-    ALLOWED_HOSTS = ['*']
-
-    # Static asset configuration
-    import os
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    STATIC_ROOT = 'staticfiles'
-    STATIC_URL = '/static/'
-
-    STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'static'),
-    )
 if 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY' in os.environ:
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
 
 if 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET' in os.environ:
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 
-if 'GOOGLE_ANALYTICS_PROPERTY_ID' in os.environ:
-    GOOGLE_ANALYTICS_PROPERTY_ID = os.environ['GOOGLE_ANALYTICS_PROPERTY_ID']
-
-#Email settings
-if 'DEFAULT_FROM_EMAIL' in os.environ:
-    DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
-if 'DEFAULT_FROM_DOMAIN' in os.environ:
-    DEFAULT_FROM_DOMAIN = os.environ['DEFAULT_FROM_DOMAIN']
-if 'EMAIL_HOST' in os.environ:
-    EMAIL_HOST = os.environ['EMAIL_HOST']
-if 'EMAIL_PORT' in os.environ:
-    EMAIL_PORT = os.environ['EMAIL_PORT']
-if 'EMAIL_HOST_USER' in os.environ:
-    EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
-if 'EMAIL_HOST_PASSWORD' in os.environ:
-    EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS'] == 'True':
-    EMAIL_USE_TLS = True
-if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL'] == 'True':
-    EMAIL_USE_SSL = True
-
-if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
-        and os.environ['SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL'] == 'True':
-    SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = True
-    # Haystack things elasticsearch
-    # HAYSTACK_CONNECTIONS = {
-    #     'default': {
-    #         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-    #         'URL': os.environ['BONSAI_URL'],
-    #         'INDEX_NAME': 'haystack',
-    #     },
-    # }
 
 try:
     from subdomains.utils import reverse
