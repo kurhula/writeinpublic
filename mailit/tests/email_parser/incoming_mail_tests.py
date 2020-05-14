@@ -12,7 +12,7 @@ from contactos.models import Contact
 
 from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
-from mailit.management.answer import OutboundMessageAnswer
+from mailit.answer import OutboundMessageAnswer
 from mailit.bin import config
 from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
 from mailit.models import BouncedMessageRecord

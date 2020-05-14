@@ -1,3 +1,5 @@
+import logging
+
 from django.views.generic.edit import UpdateView
 from .models import MailItTemplate
 from .forms import MailitTemplateForm
@@ -11,6 +13,8 @@ from django.views.generic import View
 from mailit.exceptions import CouldNotFindIdentifier, TemporaryFailure
 from mailit.answer import OutboundMessageAnswer
 from mailit.bin.handleemail import EmailHandler
+
+logger = logging.getLogger(__name__)
 
 
 class MailitTemplateUpdateView(UpdateView):
@@ -39,14 +43,18 @@ class MailitTemplateUpdateView(UpdateView):
 
 
 class IncomingMail(View):
+    def get(self, request):
+        return HttpResponse()
+
     def post(self, request):
-        print(request.body)  # TODO: clean up print statement
         handler = EmailHandler(answer_class=OutboundMessageAnswer)
         try:
-            answer = handler.handle(request.body)
+            email = request.POST['email']
+            logger.debug(email)
+            answer = handler.handle(email)
             answer.send_back()
-        except CouldNotFindIdentifier:
-            pass
-        except TemporaryFailure:
-            pass
+        except CouldNotFindIdentifier as e:
+            logger.warn(e)
+        except TemporaryFailure as e:
+            logger.warn(e)
         return HttpResponse()
