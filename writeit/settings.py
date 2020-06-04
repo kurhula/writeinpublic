@@ -376,7 +376,7 @@ CELERYBEAT_SCHEDULE = {
     },
     # Resyncs popit every week
     'resync-popit-apis-every-week': {
-        'task': 'nuntium.tasks.pull_from_popolo_json',
+        'task': 'nuntium.tasks.update_all_instances',
         'kwargs': {
             'periodicity': '1W'
         },
@@ -384,7 +384,7 @@ CELERYBEAT_SCHEDULE = {
     },
     # Resyncs popit every day
     'resync-popit-apis-every-day': {
-        'task': 'nuntium.tasks.pull_from_popolo_json',
+        'task': 'nuntium.tasks.update_all_instances',
         'kwargs': {
             'periodicity': '1D'
         },
@@ -392,7 +392,7 @@ CELERYBEAT_SCHEDULE = {
     },
     # Resyncs popit twice every day
     'resync-popit-apis-twice-every-day': {
-        'task': 'nuntium.tasks.pull_from_popolo_json',
+        'task': 'nuntium.tasks.update_all_instances',
         'kwargs': {
             'periodicity': '2D'
         },
