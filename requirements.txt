@@ -38,7 +38,8 @@ email-reply-parser==0.3.0
 enum34==1.1.6
 flufl.bounce==2.3
 futures==3.0.5
-gunicorn==19.6.0
+gevent==1.4.0
+gunicorn==19.10.0
 idna==2.1
 ipaddress==1.0.16
 Khayyam==3.0.15
